@@ -6,7 +6,7 @@ resource "null_resource" "start" {
 
 locals {
   image_hash                      = "${sha1(file(var.source_tar_gz))}"
-  image_filename_with_hash_tar_gz = "${var.name}-${local.image_hash}.tar.gz"
+  image_filename_with_hash_tar_gz = "${var.name_prefix}-${local.image_hash}.tar.gz"
 }
 
 resource "google_storage_bucket_object" "image" {
@@ -22,7 +22,7 @@ resource "google_storage_bucket_object" "image" {
 }
 
 resource "google_compute_image" "image" {
-  name = "${var.name}-${local.image_hash}"
+  name = "${var.name_prefix}-${local.image_hash}"
 
   raw_disk {
     source = "https://storage.googleapis.com/${var.bucket_name}/${google_storage_bucket_object.image.name}"
